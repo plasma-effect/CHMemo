@@ -31,18 +31,19 @@ dec_float next_normal(dec_float level)
 void print(std::size_t chorgorloth)
 {
 	dec_float outsider = mp::pow(dec_float(0.95), chorgorloth);
-	std::fstream fst("ancients/c" + std::to_string(chorgorloth) + ".md", std::ios_base::out | std::ios_base::trunc);
+	std::fstream fst("buying_memo.md", std::ios_base::out | std::ios_base::trunc);
 	std::unordered_map<std::size_t, char const*> remove = {
-		{271, "Chronos"},
-		{355, "Vaagur"},
-		{369, "Kumawakamaru"},
-		{709, "Atman"},
-		{922, "Dogcog"},
-		{4606, "Dora & Bubos"},
-		{213, "Sniperino"},
-		{436, "Kleptos"}
+		{271, "Chronos(271)"},
+		{355, "Vaagur(355)"},
+		{369, "Kuma(369)"},
+		{709, "Atman(709)"},
+		{922, "Dogcog(922)"},
+		{4606, "Dora/Bubos(4606)"},
+		{213, "Sniperino(213)"},
+		{436, "Kleptos(436)"}
 	};
 	dec_float sum = 0;
+	dec_float limit = 1;
 	std::size_t exponential_level = 1;
 	dec_float juggernaut_level = 1;
 	dec_float juggernaut_next = 10;
@@ -54,69 +55,64 @@ void print(std::size_t chorgorloth)
 
 	std::string last_removed = "";
 	fst << std::scientific << std::setprecision(3);
-	fst << "# Chorgorloth == 0" << std::endl << std::endl;
-	fst << "- [0000 to 0099](#Under-100)" << std::endl;
+	fst << "# Buying Memo" << std::endl << std::endl;
 #define SETW2(i) std::setw(2) << std::setfill('0') << i << std::flush
-	for (auto i : boost::irange(1, 20))
+	for (auto i : boost::irange(20))
 	{
 		fst << "- [" << SETW2(i) << "00 to " << SETW2(i) << "99](#" << SETW2(i) << "XX)" << std::endl;
 	}
-	fst << std::endl << "## Under-100" << std::endl << std::endl;
-	fst << "|Hero Souls|Exponential|Last Removed|Juggernaut|Accelerate|" << std::endl;
-	fst << "----|----|----|----|----" << std::endl;
-	std::size_t rank = 1;
-	while (true)
+	for (auto rank : boost::irange<std::size_t>(20))
 	{
-		dec_float n = 0;
-		dec_float nexp = active_exponential * mp::pow(dec_float(2), exponential_level + 1) * outsider;
-		dec_float njug = active_juggernaut * next_juggernaut(juggernaut_level) * outsider;
-		dec_float nnor = active_normal * next_normal(normal_level) * outsider;
-		if (njug < nexp && njug < nnor)
+		fst << std::endl << "## " << SETW2(rank) << "XX" << std::endl << std::endl;
+		fst << "|Hero Souls|Exponential|Juggernaut|Accelerate|" << std::endl;
+		fst << "----|----|----|----" << std::endl;
+		for (std::size_t _ : boost::irange(100))
 		{
-			n = njug;
-			juggernaut_level += juggernaut_next;
-			juggernaut_next *= 10;
-		}
-		else if (nnor < nexp)
-		{
-			n = nnor;
-			normal_level += normal_next;
-			normal_next *= 10;
-		}
-		else
-		{
-			n = njug;
-			++exponential_level;
-			if (remove.count(exponential_level))
+			limit *= 10;
+			while (true)
 			{
-				--active_exponential;
-				last_removed = remove.at(exponential_level);
-				if (active_exponential == 5)
+				dec_float n = 0;
+				dec_float nexp = active_exponential * mp::pow(dec_float(2), exponential_level + 1) * outsider;
+				dec_float njug = active_juggernaut * next_juggernaut(juggernaut_level) * outsider;
+				dec_float nnor = active_normal * next_normal(normal_level) * outsider;
+				if (njug < nexp && njug < nnor)
 				{
-					--active_exponential;
+					n = njug;
+					juggernaut_level += juggernaut_next;
+					juggernaut_next *= 10;
 				}
+				else if (nnor < nexp)
+				{
+					n = nnor;
+					normal_level += normal_next;
+					normal_next *= 10;
+				}
+				else
+				{
+					n = njug;
+					++exponential_level;
+					if (remove.count(exponential_level))
+					{
+						--active_exponential;
+						last_removed = remove.at(exponential_level);
+						if (active_exponential == 5)
+						{
+							--active_exponential;
+						}
+					}
+				}
+				if (sum + n > limit)
+				{
+					break;
+				}
+				sum += n;
 			}
+			fst << limit << "|" << exponential_level << "|" << juggernaut_level << "|" << normal_level << std::endl;
 		}
-		sum += n;
-		if (sum + n >= mp::pow(utility::dec_float(10), 100 * rank))
-		{
-			if (rank == 20)
-			{
-				return;
-			}
-			fst << std::endl << "## " << SETW2(rank) << "XX" << std::endl << std::endl;
-			fst << "|Hero Souls|Exponential|Last Removed|Juggernaut|Accelerate|" << std::endl;
-			fst << "----|----|----|----|----" << std::endl;
-			++rank;
-		}
-		fst << sum + n << "|" << exponential_level << "|" << last_removed << "|" << juggernaut_level << "|" << normal_level << std::endl;
 	}
 }
 
 int main()
 {
-	for (auto i : boost::irange(151))
-	{
-		print(i);
-	}
+	print(0);
 }
