@@ -2,12 +2,10 @@
 
 |Name|Limit|Cost|
 ----|----|----
-Sniperino|213|1.316e+64
-Chronos|271|3.794e+81
-Vaagur|355|7.339e+106
-Kumawakamaru|369|1.202e+111
-Kleptos|436|1.77e+131
-Atman|709|2.693e+213
-Dogcog|922|3.545e+277
-Dora|4606|3.501e+1386
-Bubos|4606|3.501e+1386
+Chronos|1101|2.717e+331
+Vaagur|1440|3.042e+433
+Kumawakamaru|1498|8.769e+450
+Atman|2880|9.255e+866
+Dogcog|3743|5.692e+1126
+Bubos|18715|5.975e+5633
+Dora|18715|5.975e+5633

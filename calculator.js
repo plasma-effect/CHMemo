@@ -1,4 +1,6 @@
 var sname = "clevel";
+var exponentialTable = [];
+
 window.onload = () =>
 {
     let clevel = localStorage.getItem(sname);
@@ -7,49 +9,6 @@ window.onload = () =>
     }
     document.getElementById("chorgorloth").value = clevel;
 }
-var numReg = /^\d+$/;
-var expReg = /^(\d+)e(\d+)$/;
-
-var parseNum = (str) => {
-    let numReg = /^\d+$/;
-    let expReg = /^(\d+)e(\d+)$/;
-    let expReg2 = /^(\d+)\.(\d*)e(\d+)$/;
-    let numSoul = str.match(numReg);
-    let expSoul = str.match(expReg);
-    let expSoul2 = str.match(expReg2);
-    if (numSoul != null) {
-        return BigInt(soulsRaw);
-    } else if (expSoul != null) {
-        return BigInt(expSoul[1]) * (10n ** BigInt(expSoul[2]));
-    } else if (expSoul2 != null) {
-        let significant = BigInt(expSoul2[1]);
-        let additional = BigInt(expSoul2[2].split('').reverse().join(''));
-        let digit = BigInt(expSoul2[3]);
-        while (digit > 0n && additional > 0n) {
-            significant *= 10n;
-            significant += additional % 10n;
-            --digit;
-            additional /= 10n;
-        }
-        return significant * (10n ** digit);
-    }
-    return null;
-};
-
-var expStr = (num) => {
-    significant = 0n;
-    digit = 0n;
-    if (num == 0n) {
-        return "0.000e0";
-    }
-    while (num >= 10n) {
-        significant /= 10n;
-        significant += (num % 10n) * 100n;
-        ++digit;
-        num /= 10n;
-    }
-    return num + "." + ("000" + significant).slice(-3) + "e" + digit;
-};
 
 var binarySearch = (func, min, max) => {
     while (max - min > 1n) {
@@ -194,16 +153,10 @@ var run = () => {
     let start = performance.now()
     document.getElementById("result").innerText = "計算中…";
     let clevel = BigInt(document.getElementById("chorgorloth").value);
-    console.log()
     let soulsRaw = document.getElementById("soul").value;
     let souls = parseNum(soulsRaw);
     localStorage.setItem(sname, clevel);
     let expLevel = AncientLimits.exponential(souls, clevel);
-    souls -= AncientCosts.exponential(expLevel, clevel);
-    let juggernautLevel = fibSearch(AncientLimits.juggernaut(souls, clevel), souls, clevel);
-    souls -= AncientCosts.juggernaut(juggernautLevel, clevel);
-    let mammonLevel = AncientLimits.mammon(souls, clevel);
-    souls -= AncientCosts.mammon(mammonLevel, clevel);
     let end = performance.now();
     document.getElementById("chronos").innerText = min(expLevel, AncientCosts.expThresholds[0]);
     document.getElementById("vaagur").innerText = min(expLevel, AncientCosts.expThresholds[1]);

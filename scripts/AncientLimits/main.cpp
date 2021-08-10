@@ -47,37 +47,20 @@ utility::dec_float bubos(std::size_t level)
 
 int main() 
 {
-	std::tuple<char const*, utility::func_t, utility::dec_float, bool> ancients[] = {
-		{"Kumawakamaru", kumawakamaru, -8, false},
-		{"Vaagur", vaagur, -75, false},
-		{"Atman", atman, 75, false},
-		{"Chronos", chronos, 30, false},
-		{"Dogcog", dogcog, -99.99999999, false},
-		{"Dora", dora, 9900, false},
-		{"Bubos", bubos, -5, false}
+	std::tuple<char const*, int> ancients[] = {
+		{"Chronos", 1101},
+		{"Vaagur", 1440},
+		{"Kumawakamaru", 1498},
+		{"Atman", 2880},
+		{"Dogcog", 3743},
+		{"Bubos",18715},
+		{"Dora", 18715}
 	};
 	std::size_t rest = std::size(ancients);
 	std::cout << std::scientific << std::setprecision(3);
 	std::cerr << std::scientific << std::setprecision(3) << std::boolalpha;
-	for (std::size_t level = 2;;++level)
+	for (auto [name, level] : ancients)
 	{
-		for (auto& [name, func, limit, flag] : ancients)
-		{
-			if (flag)
-			{
-				continue;
-			}
-			auto effect = func(level);
-			if (mp::abs(effect - limit) < mp::abs(limit) * 0.0001)
-			{
-				flag = true;
-				--rest;
-				std::cout << name << "(level: " << level << ", effect: " << effect << ", cost: " << mp::pow(utility::dec_float(2), level) << ")" << std::endl;
-				if (rest == 0)
-				{
-					return 0;
-				}
-			}
-		}
+		std::cout << name << "|" << level << "|" << mp::pow(utility::dec_float(2), level) << std::endl;
 	}
 }
